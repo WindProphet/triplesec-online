@@ -1,0 +1,82 @@
+<title>TripleSec</title>
+<link rel="stylesheet" href="bulma.min.css" type="text/css" media="screen">
+<tag autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+<script src="triplesec-3.0.14-min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+  window.onhashchange = (e) => (console.log(e))
+  
+  function ProgressHook(obj) {
+    console.log(obj)
+  }
+  
+  function EncryptEvent() {
+    var keyArea = document.getElementById('key-area');
+    var inputArea = document.getElementById('input-area');
+    var textareaControl = document.getElementById('textarea-control');
+    textareaControl.classList.add('is-loading')
+    triplesec.encrypt({
+      data: new triplesec.Buffer(inputArea.value),
+      key:  new triplesec.Buffer(keyArea.value),
+      progress_hook: ProgressHook
+    }, function(err, buff) {
+      textareaControl.classList.remove('is-loading')
+      if (!err) {
+        var ciphertext = buff.toString('base64')
+        inputArea.value = ciphertext
+      }
+      else {
+        console.error(err)
+      }
+    })
+  }
+  
+  function DecryptEvent() {
+    var keyArea = document.getElementById('key-area');
+    var inputArea = document.getElementById('input-area');
+    var textareaControl = document.getElementById('textarea-control');
+    textareaControl.classList.add('is-loading')
+    triplesec.decrypt({
+      data: new triplesec.Buffer(inputArea.value, 'base64'),
+      key:  new triplesec.Buffer(keyArea.value),
+      progress_hook: ProgressHook
+    }, function(err, buff) {
+      textareaControl.classList.remove('is-loading')
+      if (!err) {
+        var plaintext = buff.toString()
+        inputArea.value = plaintext
+      }
+      else {
+        console.error(err)
+      }
+    })
+  }
+</script>
+<section class="section">
+  <div class="container">
+    <div class="box">
+      <div class="columns">
+        <div class="column is-one-thrid">
+          <input class="input" type="text" id="key-area" placeholder="key (password)">
+        </div>
+        <div class="column is-one-third">
+          <a class="button is-rounded" onclick="EncryptEvent()">Encrypt</a>
+          <a class="button is-rounded" onclick="DecryptEvent()">Decrypt</a>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-one">
+          <div class="control" id="textarea-control">
+            <textarea class="textarea" type="text" id="input-area" placeholder="input"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p>
+      Using 
+      <a href="https://keybase.io/triplesec/">keybase.io/triplesec</a>
+      encryption library, 
+      CSS Framework using
+      <a href="https://bulma.io/">Bulma CSS</a>
+    </p>
+  </div>
+</section>
