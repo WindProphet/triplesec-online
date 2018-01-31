@@ -3,7 +3,44 @@
 <tag autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
 <script src="triplesec-3.0.14-min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
-  window.onhashchange = (e) => (console.log(e))
+  var para = {}
+  function hashChange(e) {
+    if (e) {
+      e.preventDefault()
+    }
+    var match = window.location.hash.match(/^#(.*?)$/)
+    if (match) {
+      para = match[1].split("&").reduce(function(prev, curr, i, arr) {
+        var p = curr.split("=");
+        prev[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+        return prev;
+      }, {});
+    }
+    var match = window.location.search.match(/^\?(.*?)$/)
+    if (match) {
+      para = match[1].split("&").reduce(function(prev, curr, i, arr) {
+        var p = curr.split("=");
+        prev[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+        return prev;
+      }, para);
+    }
+    
+    var keyArea = document.getElementById('key-area');
+    var inputArea = document.getElementById('input-area');
+    var textareaControl = document.getElementById('textarea-control');
+    
+    if (para.e) {
+      inputArea.value = para.e
+    }
+    if (para.ro) {
+      inputArea.readOnly = true
+    }
+    if (para.q) {
+      keyArea.placeholder = para.q
+    }
+  }
+  window.onhashchange = hashChange
+  window.addEventListener("DOMContentLoaded", hashChange)
   
   function ProgressHook(obj) {
     console.log(obj)
@@ -23,6 +60,7 @@
       if (!err) {
         var ciphertext = buff.toString('base64')
         inputArea.value = ciphertext
+        window.location.hash = '#e=' + encodeURIComponent(ciphertext)
       }
       else {
         console.error(err)
