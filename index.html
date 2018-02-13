@@ -1,4 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
 <title>TripleSec</title>
 <link rel="stylesheet" href="bulma.min.css" type="text/css" media="screen">
 <tag autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
@@ -37,7 +38,7 @@
       inputArea.readOnly = true
     }
     if (para.q) {
-      keyArea.placeholder = para.q
+      keyArea.placeholder = decodeURIComponent(para.q)
     }
   }
   window.onhashchange = hashChange
